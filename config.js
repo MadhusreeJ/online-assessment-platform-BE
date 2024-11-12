@@ -12,7 +12,6 @@ if (PRODUCTION) {
   mongoose.connect(process.env.DB, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true,
   });
 } else {
   mongoose.connect(process.env.DB, {
