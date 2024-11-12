@@ -29,13 +29,13 @@ const studentSchema = new mongoose.Schema({
             max_score : {
                 type : Number
             },
-            video: {  // New field for the video
-                type: String,  // This will store the file path or URL of the video
-                default: null    // Default value can be null if no video is uploaded
+            video: {  
+                type: String,  
+                default: null   
             },
-            redFlag: { // Add redFlag field
+            redFlag: { 
                 type: Boolean,
-                default: false // Default is false (not flagged)
+                default: false 
             }
         }
     ]
