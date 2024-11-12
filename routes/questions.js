@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 const Exam = require('../model/exam');
 
-/* GET home page. */
 router.get('/get-questions-by-id/:examId', async function(req, res, next) {
   try{
         const questions = await Exam.findById({_id : req.params.examId});
@@ -28,21 +27,13 @@ router.post('/create-question/:examId', async function(req, res, next){
 router.get('/get-question-by-id/:examId/:questionId', async function(req, res, next) {
   try {
     const exam = await Exam.findById(req.params.examId);
-    
-    // Check if the exam exists
     if (!exam) {
       return res.status(404).json({ message: 'Exam not found' });
-    }
-
-    // Find the question by questionId within the exam's questions
-    const question = exam.questions.id(req.params.questionId); // Assuming questions are stored as an array of subdocuments
-
-    // Check if the question exists
+    } 
+    const question = exam.questions.id(req.params.questionId); 
     if (!question) {
       return res.status(404).json({ message: 'Question not found' });
     }
-
-    // Return the found question
     res.json(question);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -51,25 +42,21 @@ router.get('/get-question-by-id/:examId/:questionId', async function(req, res, n
 
 router.put('/update-question/:examId/:questionId', async function(req, res, next) {
   try {
-      // Find the exam by ID
       const exam = await Exam.findById(req.params.examId);
       if (!exam) {
           return res.status(404).json({ message: "Exam not found" });
       }
 
-      // Find the question by ID within the exam's questions array
       const questionIndex = exam.questions.findIndex(q => q._id.toString() === req.params.questionId);
       if (questionIndex === -1) {
           return res.status(404).json({ message: "Question not found" });
       }
 
-      // Update the question with the new data from the request body
       exam.questions[questionIndex] = {
-          ...exam.questions[questionIndex], // Keep existing data
-          ...req.body // Update with new data
+          ...exam.questions[questionIndex], 
+          ...req.body 
       };
 
-      // Save the updated exam
       await exam.save();
       res.json({ message: "Question updated successfully" });
   } catch (error) {
