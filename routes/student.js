@@ -35,19 +35,14 @@ router.get('/get-all-students', async function(req, res, next) {
     const { mail, password } = req.body;
 
     try {
-        // Find the user by email
         const student = await Student.findOne({ mail });
         if (!student) {
             return res.status(400).json({ message: 'No user found' });
         }
-
-        // Compare the provided password with the stored hashed password
         const passwordCheck = await bcrypt.compare(password, student.password);
         if (!passwordCheck) {
             return res.status(400).json({ message: 'Invalid email or password' });
         }
-
-        // Successful login
         res.status(200).json({ message: 'Login successful', student: { name: student.name, mail: student.mail , id : student._id } });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
