@@ -107,7 +107,7 @@ router.post('/submit-exam/:studentId/:examId', upload.single('video'), async fun
     score: totalMark,
     max_score: exam.max_score
 };
-
+console.log("New Exam:", newExam);
 // Validate the newExam object
 if (typeof newExam !== 'object' || newExam === null) {
     return res.status(400).json({ message: "Invalid exam data." });
