@@ -97,6 +97,10 @@ router.post('/submit-exam/:studentId/:examId', upload.single('video'), async fun
       });
 
       const student = await Student.findById({ _id: req.params.studentId });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found." });
+    }
+    console.log(student);
       student.exams.push({
           exam_id: exam._id,
           exam: exam.course,
