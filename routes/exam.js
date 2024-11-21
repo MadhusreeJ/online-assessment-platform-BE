@@ -107,21 +107,19 @@ router.post('/submit-exam/:studentId/:examId', upload.single('video'), async fun
     score: totalMark,
     max_score: exam.max_score
 };
-console.log("New Exam:", newExam);
-// Validate the newExam object
-if (typeof newExam !== 'object' || newExam === null) {
-    return res.status(400).json({ message: "Invalid exam data." });
-}
+  if (!newExam.exam_id || !newExam.exam || typeof newExam.score !== 'number' || typeof newExam.max_score !== 'number') {
+        return res.status(400).json({ message: "Invalid exam data." });
+    }
 
-if (!newExam.exam_id || !newExam.exam || typeof newExam.score !== 'number' || typeof newExam.max_score !== 'number') {
-    return res.status(400).json({ message: "Invalid exam data." });
-}
+    // Clean the exams array to remove invalid entries (like empty strings)
+    student.exams = student.exams.filter(exam => typeof exam === 'object' && exam !== null);
 
-student.exams.push(newExam);
+    // Push the new exam
+    student.exams.push(newExam);
       if (req.file) {
           student.exams[student.exams.length - 1].video = req.file.path;
-          await student.save();
       }
+      await student.save();
       res.status(200).json({
           student,
           Marks: totalMark
