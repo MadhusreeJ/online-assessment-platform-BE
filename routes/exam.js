@@ -101,13 +101,23 @@ router.post('/submit-exam/:studentId/:examId', upload.single('video'), async fun
       return res.status(404).json({ message: "Student not found." });
     }
     console.log(student);
-      student.exams.push({
-          exam_id: exam._id,
-          exam: exam.course,
-          score: totalMark,
-          max_score: exam.max_score
-      });
-      await student.save();
+    const newExam = {
+    exam_id: exam._id,
+    exam: exam.course,
+    score: totalMark,
+    max_score: exam.max_score
+};
+
+// Validate the newExam object
+if (typeof newExam !== 'object' || newExam === null) {
+    return res.status(400).json({ message: "Invalid exam data." });
+}
+
+if (!newExam.exam_id || !newExam.exam || typeof newExam.score !== 'number' || typeof newExam.max_score !== 'number') {
+    return res.status(400).json({ message: "Invalid exam data." });
+}
+
+student.exams.push(newExam);
       if (req.file) {
           student.exams[student.exams.length - 1].video = req.file.path;
           await student.save();
@@ -116,7 +126,13 @@ router.post('/submit-exam/:studentId/:examId', upload.single('video'), async fun
           student,
           Marks: totalMark
       });
-  } catch (error) {
+    console.log("Exam ID:", exam._id);
+console.log("Exam Course:", exam.course);
+console.log("Total Mark:", totalMark);
+console.log("New Exam Object:", newExam);
+
+  } 
+  catch (error) {
       console.error(error);
       res.status(500).json({ message: error.message });
   }
